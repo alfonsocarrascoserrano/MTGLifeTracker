@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.navigation.NavController
+import com.example.mtglifetracker.Data
 
 @Composable
 fun start(navController: NavController) {
@@ -22,22 +23,27 @@ fun start(navController: NavController) {
     ) {
         Text(text = "Create table with:")
         Button(onClick = {
+            Data.lifeList = mutableListOf(40,40,40,40,40,40)
             navController.navigate("table/2") }) {
             Text(text = "2 Players")
         }
         Button(onClick = {
+            Data.lifeList = mutableListOf(40,40,40,40,40,40)
             navController.navigate("table/3") }) {
             Text(text = "3 Players")
         }
         Button(onClick = {
+            Data.lifeList = mutableListOf(40,40,40,40,40,40)
             navController.navigate("table/4") }) {
             Text(text = "4 Players")
         }
         Button(onClick = {
+            Data.lifeList = mutableListOf(40,40,40,40,40,40)
             navController.navigate("table/5") }) {
             Text(text = "5 Players")
         }
         Button(onClick = {
+            Data.lifeList = mutableListOf(40,40,40,40,40,40)
             navController.navigate("table/6") }) {
             Text(text = "6 Players")
         }

@@ -22,15 +22,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.mtglifetracker.Data
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlin.concurrent.thread
 
 @Composable
-fun players(num: Int=2){
-    Data.lifeList = mutableListOf(40,40,40,40,40,40)
-
+fun players(num: Int = 2, navController: NavHostController){
     Box {
         when(num){
             3-> {
@@ -49,10 +48,9 @@ fun players(num: Int=2){
                 Two()
             }
         }
-        Button(onClick = { Data.lifeList = mutableListOf(40,40,40,40,40,40)
-
+        Button(onClick = { navController.navigate("menu/"+num.toString())
         }) {
-            Text(text = "...")
+            Text(text = "menu")
 
         }
     }
