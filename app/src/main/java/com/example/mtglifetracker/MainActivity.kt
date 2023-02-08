@@ -15,13 +15,21 @@ import com.example.mtglifetracker.views.*
 class Data {
     companion object Num {
         var lifeList: MutableList<Int> by mutableStateOf(mutableListOf(40,40,40,40,40,40))
-        var colorList: MutableList<Color> by mutableStateOf(mutableListOf(
+        var pColor: MutableList<Int> by mutableStateOf(mutableListOf(0,1,2,3,4,5))
+        val colorList:List<Color> = listOf(
+            Color(0xFFc3cb71),
             Color(0xFF1b85b8),
             Color(0xFF5a5255),
-            Color(0xFF559e83),
             Color(0xFFae5a41),
-            Color(0xFFc3cb71),
-            Color.Gray))
+            Color(0xFF559e83),
+            Color(0xFF8F8F63),
+            Color(0xFFB99359),
+            Color(0xFF8CB57A),
+            Color(0xFF3B6C87),
+            Color(0xFF65707D),
+            Color(0xFF84564B),
+            Color(0xFFE1E5B8)
+        )
     }
 }
 

@@ -30,6 +30,7 @@ import kotlin.concurrent.thread
 
 @Composable
 fun players(num: Int = 2, navController: NavHostController){
+    showSubmenu.value = 0
     Box {
         when(num){
             3-> {
@@ -50,7 +51,7 @@ fun players(num: Int = 2, navController: NavHostController){
         }
         Button(onClick = { navController.navigate("menu/"+num.toString())
         }) {
-            Text(text = "menu")
+            Text(text = "...")
 
         }
     }
@@ -136,7 +137,7 @@ fun ColumnScope.player(playerid: Int, numplayers: Int, rotation:Float=0f) {
     }
 
     Column(modifier = Modifier
-        .background(color = Data.colorList[playerid - 1])
+        .background(color = Data.colorList[Data.pColor[playerid - 1]])
         .fillMaxSize()
         .weight(1f)
         .rotate(rotation)
@@ -178,12 +179,12 @@ fun ColumnScope.player(playerid: Int, numplayers: Int, rotation:Float=0f) {
                     }
             ){}
 
-            Text(if (lifedif.value>0) "+"+lifedif.value.toString() else lifedif.value.toString(), fontSize = if (lifedif.value==0) 0.sp else 40.sp, fontWeight = FontWeight.Normal , modifier = Modifier
+            Text(if (lifedif.value>0) "+"+lifedif.value.toString() else lifedif.value.toString(), fontSize = if (lifedif.value==0) 0.sp else 30.sp, fontWeight = FontWeight.Normal , modifier = Modifier
                 .align(Alignment.Center)
                 .offset(0.dp, -60.dp))
 
             Text(
-                Data.lifeList[playerid-1].toString(), fontFamily = FontFamily.SansSerif ,fontSize = Data.lifeList[playerid-1].scaledSp(), fontWeight = FontWeight.SemiBold , modifier = Modifier.align(
+                Data.lifeList[playerid-1].toString(), fontFamily = FontFamily.SansSerif ,fontSize = Data.lifeList[playerid-1].scaledSp(), fontWeight = FontWeight.Normal , modifier = Modifier.align(
                     Alignment.Center))
 
             Box(
@@ -236,7 +237,7 @@ fun Int.scaledSp(): TextUnit {
     val value: Int = this
     return with(LocalDensity.current) {
         val fontScale = this.fontScale
-        val textSize = (50+value/1.35) / fontScale
+        val textSize = (40+value/1.35) / fontScale
         textSize.sp
     }
 }
