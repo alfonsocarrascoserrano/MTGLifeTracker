@@ -57,7 +57,8 @@ fun menu(numplayers: Int, navController: NavHostController) {
                 Text(text = "Select colors")
             }
             Button(onClick = {
-                showSubmenu.value = 3
+                //showSubmenu.value = 3
+                navController.navigate("cards")
             }) {
                 Text(text = "Search Card")
             }

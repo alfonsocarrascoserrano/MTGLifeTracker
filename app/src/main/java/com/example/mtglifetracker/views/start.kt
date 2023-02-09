@@ -1,19 +1,33 @@
 package com.example.mtglifetracker.views
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import android.app.Activity
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.sharp.KeyboardArrowLeft
+import androidx.compose.material.icons.sharp.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mtglifetracker.Data
+import com.example.mtglifetracker.viewModel.CardViewModel
+
+val tableSize = mutableStateOf(value = 4)
 
 @Composable
 fun start(navController: NavController) {
+    val activity = (LocalContext.current as? Activity)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -22,30 +36,33 @@ fun start(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(text = "Create table with:")
-        Button(onClick = {
-            Data.lifeList = mutableListOf(40,40,40,40,40,40)
-            navController.navigate("table/2") }) {
-            Text(text = "2 Players")
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Button(modifier = Modifier.size(30.dp,30.dp),
+                contentPadding = PaddingValues(0.dp),
+                onClick = {
+                if(tableSize.value>2) tableSize.value-- }) {
+                Text("-")
+            }
+            Text(modifier = Modifier.padding(10.dp), text = tableSize.value.toString())
+            Button(modifier = Modifier.size(30.dp,30.dp),
+                contentPadding = PaddingValues(0.dp),
+                onClick = {
+                if(tableSize.value<6) tableSize.value++ }) {
+                Text(text = "+")
+            }
         }
         Button(onClick = {
             Data.lifeList = mutableListOf(40,40,40,40,40,40)
-            navController.navigate("table/3") }) {
-            Text(text = "3 Players")
+            navController.navigate("table/"+ tableSize.value.toString()) }) {
+            Text(text = "Start")
         }
         Button(onClick = {
-            Data.lifeList = mutableListOf(40,40,40,40,40,40)
-            navController.navigate("table/4") }) {
-            Text(text = "4 Players")
+            navController.navigate("cards") }) {
+            Text(text = "Search Cards")
         }
         Button(onClick = {
-            Data.lifeList = mutableListOf(40,40,40,40,40,40)
-            navController.navigate("table/5") }) {
-            Text(text = "5 Players")
-        }
-        Button(onClick = {
-            Data.lifeList = mutableListOf(40,40,40,40,40,40)
-            navController.navigate("table/6") }) {
-            Text(text = "6 Players")
+            activity?.finish() }) {
+            Text(text = "Exit")
         }
     }
 }

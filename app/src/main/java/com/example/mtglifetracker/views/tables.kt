@@ -31,6 +31,7 @@ import kotlin.concurrent.thread
 @Composable
 fun players(num: Int = 2, navController: NavHostController){
     showSubmenu.value = 0
+    colorpicker.value = 0
     Box {
         when(num){
             3-> {
