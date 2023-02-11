@@ -322,11 +322,11 @@ fun colorPick(){
         //.clip(RoundedCornerShape(20.dp, 20.dp, 20.dp, 20.dp)))
     ){
         Column(modifier = Modifier
-            .fillMaxSize(0.9f)
+            .fillMaxSize()
             .align(Alignment.Center)
             .background(MaterialTheme.colors.background), verticalArrangement = Arrangement.SpaceEvenly, horizontalAlignment = Alignment.CenterHorizontally) {
             
-            Text(text = "Select a color:", fontSize = 30.sp)
+            Text(text = "Player "+colorpicker.value.toString()+" select a color:", fontSize = 30.sp)
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 Button(modifier = Modifier
