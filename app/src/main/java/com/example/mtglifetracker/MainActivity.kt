@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.mtglifetracker.model.MTGCard
+import com.example.mtglifetracker.ui.theme.MTGLifeTrackerTheme
 import com.example.mtglifetracker.viewModel.CardViewModel
 import com.example.mtglifetracker.views.*
 
@@ -55,10 +56,19 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             NavHost(navController, "start"){
                 composable("start"){
-                    start(navController)
+                    MTGLifeTrackerTheme {
+                        Surface() {
+                            start(navController)
+                        }
+                    }
+
                 }
                 composable("cards"){
-                    cards(navController, cardViewModel)
+                    MTGLifeTrackerTheme {
+                        Surface() {
+                            cards(navController, cardViewModel)
+                        }
+                    }
                 }
                 composable("menu/{numplayers}",
                     arguments = listOf(navArgument("numplayers")
@@ -66,7 +76,11 @@ class MainActivity : ComponentActivity() {
                 ){backStackEntry ->
                     val numplayers = backStackEntry.arguments?.getInt("numplayers")
                     requireNotNull(numplayers)
-                    menu(numplayers, navController)
+                    MTGLifeTrackerTheme {
+                        Surface() {
+                            menu(numplayers, navController)
+                        }
+                    }
                 }
                 composable(route="table/{numplayers}",
                     arguments = listOf(navArgument("numplayers")
@@ -74,16 +88,14 @@ class MainActivity : ComponentActivity() {
                 ){backStackEntry ->
                     val numplayers = backStackEntry.arguments?.getInt("numplayers")
                     requireNotNull(numplayers)
-                    players(numplayers, navController)
+                    MTGLifeTrackerTheme {
+                        Surface() {
+                            players(numplayers, navController)
+                        }
+                    }
                 }
             }
-            /*MTGLifeTrackerTheme {
-                Surface(
-                    //color = MaterialTheme.colors.background
-                ) {
 
-                }
-            }*/
         }
     }
 }

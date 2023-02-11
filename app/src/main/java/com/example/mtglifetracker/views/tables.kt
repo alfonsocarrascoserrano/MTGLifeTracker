@@ -5,20 +5,25 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,10 +55,14 @@ fun players(num: Int = 2, navController: NavHostController){
                 Two()
             }
         }
-        Button(onClick = { navController.navigate("menu/"+num.toString())
-        }) {
-            Text(text = "...")
-
+        IconButton(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .clip(RoundedCornerShape(50))
+                .background(MaterialTheme.colors.background),
+            onClick = { navController.navigate("menu/"+num.toString()) }
+        ){
+            Icon(imageVector = Icons.Rounded.Menu, contentDescription = "Menu")
         }
     }
 }
@@ -182,11 +191,11 @@ fun ColumnScope.player(playerid: Int, numplayers: Int, rotation:Float=0f) {
 
             Text(if (lifedif.value>0) "+"+lifedif.value.toString() else lifedif.value.toString(), fontSize = if (lifedif.value==0) 0.sp else 30.sp, fontWeight = FontWeight.Normal , modifier = Modifier
                 .align(Alignment.Center)
-                .offset(0.dp, -60.dp))
+                .offset(0.dp, -50.dp), color= Color.Black)
 
             Text(
                 Data.lifeList[playerid-1].toString(), fontFamily = FontFamily.SansSerif ,fontSize = Data.lifeList[playerid-1].scaledSp(), fontWeight = FontWeight.Normal , modifier = Modifier.align(
-                    Alignment.Center))
+                    Alignment.Center), color= Color.Black)
 
             Box(
                 modifier = Modifier

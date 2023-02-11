@@ -1,9 +1,14 @@
 package com.example.mtglifetracker.views
 
+import android.annotation.SuppressLint
 import android.graphics.ColorSpace
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -12,67 +17,93 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
+import coil.size.Size
 import com.example.mtglifetracker.Data
+import com.example.mtglifetracker.ui.theme.Shapes
 
 val showSubmenu = mutableStateOf(0)
 val rando = mutableStateOf(value = 0)
+val randoType = mutableStateOf(value = 0)
 val colorpicker = mutableStateOf(value = 0)
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun menu(numplayers: Int, navController: NavHostController) {
     Box(){
         if(showSubmenu.value>0) {
-            subMenus(numplayers)
-        }
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        navigationIcon = {
+                            IconButton(onClick = { showSubmenu.value=0 }) {
+                                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
+                            }
+                        },
+                        title = {
+                            Text("")
+                        }
+                    )
+                }
+            ) { subMenus(numplayers)}
+        } else {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        navigationIcon = {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
+                            }
+                        },
+                        title = {
+                            Text("")
+                        }
+                    )
+                }
+            ) {
 
-        Column(
-            modifier = Modifier
-                .background(Color.Gray)
-                .fillMaxSize()
-                .scale(2f),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(onClick = {
-                Data.lifeList = mutableListOf(40, 40, 40, 40, 40, 40)
-                navController.popBackStack()
-            }) {
-                Text(text = "Reset")
-            }
-            Button(onClick = {
-                rando.value = (0 until numplayers).random()
-                showSubmenu.value = 1
-            }) {
-                Text(text = "Random player")
-            }
-            Button(onClick = {
-                showSubmenu.value = 2
-            }) {
-                Text(text = "Select colors")
-            }
-            Button(onClick = {
-                //showSubmenu.value = 3
-                navController.navigate("cards")
-            }) {
-                Text(text = "Search Card")
-            }
-            Button(onClick = {
-                rando.value = (0 until 2).random()
-                showSubmenu.value = 4
-            }) {
-                Text(text = "Flip Coin")
-            }
-            Button(onClick = {
-                rando.value = (1 until 21).random()
-                showSubmenu.value = 5
-            }) {
-                Text(text = "D20")
+                Column(
+                    modifier = Modifier
+                        .background(MaterialTheme.colors.background)
+                        .fillMaxSize()
+                        .scale(2f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Button(modifier = Modifier.fillMaxWidth(0.4f),
+                        onClick = {
+                            Data.lifeList = mutableListOf(40, 40, 40, 40, 40, 40)
+                            navController.popBackStack()
+                        }) {
+                        Text(text = "Reset")
+                    }
+                    Button(modifier = Modifier.fillMaxWidth(0.4f),
+                        onClick = {
+                            showSubmenu.value = 1
+                        }) {
+                        Text(text = "Randomness")
+                    }
+                    Button(modifier = Modifier.fillMaxWidth(0.4f),
+                        onClick = {
+                            showSubmenu.value = 2
+                        }) {
+                        Text(text = "Select colors")
+                    }
+                    Button(modifier = Modifier.fillMaxWidth(0.4f),
+                        onClick = {
+                            //showSubmenu.value = 3
+                            navController.navigate("cards")
+                        }) {
+                        Text(text = "Search Card")
+                    }
+                }
             }
 
         }
@@ -84,7 +115,7 @@ fun subMenus(numplayers: Int) {
     Box(modifier = Modifier
         .zIndex(0.5f)
         .fillMaxSize()
-        //.clip(RoundedCornerShape(20.dp, 20.dp, 20.dp, 20.dp)))
+
     ) {
         if(colorpicker.value>0){
             colorPick()
@@ -93,36 +124,77 @@ fun subMenus(numplayers: Int) {
             1 -> { //Random player
                 Column(
                     modifier = Modifier
-                        .wrapContentWidth()//.fillMaxWidth(0.65f)
-                        .wrapContentHeight()//.fillMaxHeight(0.2f)
-                        .background(Color.White)
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.4f)
+                        //.clip(shape = RoundedCornerShape(size = 6.dp))
+                        .background(MaterialTheme.colors.background)
                         .align(Alignment.Center)
-                    ,verticalArrangement = Arrangement.Center,
+                        .scale(2f)
+                    ,verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row() {
-                        Text(
-                            text = "Player " + (rando.value + 1).toString(),
-                            fontSize = 30.sp
-                        )
-                        Spacer(modifier = Modifier.size(20.dp))
-                        Box(
-                            modifier = Modifier
-                                .background(Data.colorList[Data.pColor[rando.value]])
-                                .size(30.dp, 30.dp)
-                                .align(alignment = Alignment.CenterVertically)
-                        )
-                    }
-                    Row(modifier = Modifier.fillMaxWidth(0.7f), horizontalArrangement = Arrangement.End) {
-                        Button(modifier = Modifier.padding(10.dp), onClick = {
+                    Button(modifier = Modifier.fillMaxWidth(0.4f),
+                        onClick = {
                             rando.value = (0 until numplayers).random()
+                            randoType.value = 1
                         }) {
-                            Text("Again")
+                        Text(text = "Player")
+                    }
+                    Button(modifier = Modifier.fillMaxWidth(0.4f),
+                        onClick = {
+                            rando.value = (0 until 2).random()
+                            randoType.value = 2
+                        }) {
+                        Text(text = "Flip Coin")
+                    }
+                    Button(modifier = Modifier.fillMaxWidth(0.4f),
+                        onClick = {
+                            rando.value = (1 until 21).random()
+                            randoType.value = 3
+                        }) {
+                        Text(text = "D20")
+                    }
+                    Spacer(modifier = Modifier.size(20.dp))
+                    Text(text = "Result is:")
+                    when(randoType.value){
+                        1 -> {
+                            Row() {
+                                Text(
+                                    text = "Player " + (rando.value + 1).toString(),
+                                    fontSize = 20.sp
+                                )
+                                Spacer(modifier = Modifier.size(10.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .background(Data.colorList[Data.pColor[rando.value]])
+                                        .size(20.dp, 20.dp)
+                                        .align(alignment = Alignment.CenterVertically)
+                                )
+                            }
                         }
-                        Button(modifier = Modifier.padding(10.dp), onClick = {
-                            showSubmenu.value = 0
-                        }) {
-                            Text("Close")
+                        2->{
+                            Row() {
+                                Text(
+                                    text = (if(rando.value==1) "Heads" else "Tails"),
+                                    fontSize = 20.sp
+                                )
+                            }
+                        }
+                        3->{
+                            Row() {
+                                Text(
+                                    text = (rando.value).toString(),
+                                    fontSize = 20.sp
+                                )
+                            }
+                        }
+                        else -> {
+                            Row() {
+                                Text(
+                                    text = "No result yet",
+                                    fontSize = 20.sp
+                                )
+                            }
                         }
                     }
                 }
@@ -130,11 +202,12 @@ fun subMenus(numplayers: Int) {
             2 -> { //Select colors
                 Column(
                     modifier = Modifier
-                        .wrapContentWidth()//.fillMaxWidth(0.65f)
-                        .wrapContentHeight()//.fillMaxHeight(0.1f + 0.065f * numplayers)
-                        .background(Color.White)
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.7f)
+                        .background(MaterialTheme.colors.background)
                         .align(Alignment.Center)
-                    ,verticalArrangement = Arrangement.Center,
+                        .scale(1.5f)
+                    ,verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row() {
@@ -235,76 +308,6 @@ fun subMenus(numplayers: Int) {
                             }
                         }
                     }
-                    Row(modifier = Modifier.fillMaxWidth(0.7f), horizontalArrangement = Arrangement.End) {
-                        Button(modifier = Modifier.padding(10.dp), onClick = {
-                            showSubmenu.value = 0
-                        }) {
-                            Text("Close")
-                        }
-                    }
-                }
-            }
-            3 -> { //Search card
-
-            }
-            4 -> { //Flip coin
-                Column(
-                    modifier = Modifier
-                        .wrapContentWidth()//.fillMaxWidth(0.65f)
-                        .wrapContentHeight()//.fillMaxHeight(0.2f)
-                        .background(Color.White)
-                        .align(Alignment.Center)
-                    ,verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row() {
-                        Text(
-                            text = "Result is " + (if(rando.value==1) "Heads" else "Tails"),
-                            fontSize = 30.sp
-                        )
-                    }
-                    Row(modifier = Modifier.fillMaxWidth(0.7f), horizontalArrangement = Arrangement.End) {
-                        Button(modifier = Modifier.padding(10.dp), onClick = {
-                            rando.value = (0 until 2).random()
-                        }) {
-                            Text("Again")
-                        }
-                        Button(modifier = Modifier.padding(10.dp), onClick = {
-                            showSubmenu.value = 0
-                        }) {
-                            Text("Close")
-                        }
-                    }
-                }
-            }
-            5 -> { //D20
-                Column(
-                    modifier = Modifier
-                        .wrapContentWidth()//.fillMaxWidth(0.65f)
-                        .wrapContentHeight()//.fillMaxHeight(0.2f)
-                        .background(Color.White)
-                        .align(Alignment.Center)
-                    ,verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row() {
-                        Text(
-                            text = "Result is " + (rando.value).toString(),
-                            fontSize = 30.sp
-                        )
-                    }
-                    Row(modifier = Modifier.fillMaxWidth(0.7f), horizontalArrangement = Arrangement.End) {
-                        Button(modifier = Modifier.padding(10.dp), onClick = {
-                            rando.value = (1 until 21).random()
-                        }) {
-                            Text("Again")
-                        }
-                        Button(modifier = Modifier.padding(10.dp), onClick = {
-                            showSubmenu.value = 0
-                        }) {
-                            Text("Close")
-                        }
-                    }
                 }
             }
         }
@@ -321,7 +324,7 @@ fun colorPick(){
         Column(modifier = Modifier
             .fillMaxSize(0.9f)
             .align(Alignment.Center)
-            .background(Color.White), verticalArrangement = Arrangement.SpaceEvenly, horizontalAlignment = Alignment.CenterHorizontally) {
+            .background(MaterialTheme.colors.background), verticalArrangement = Arrangement.SpaceEvenly, horizontalAlignment = Alignment.CenterHorizontally) {
             
             Text(text = "Select a color:", fontSize = 30.sp)
             

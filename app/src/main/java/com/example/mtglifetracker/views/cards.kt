@@ -1,5 +1,7 @@
 package com.example.mtglifetracker.views
 
+import android.annotation.SuppressLint
+import android.text.Layout.Alignment
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
@@ -7,14 +9,24 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -27,53 +39,72 @@ import coil.size.Scale
 val cBrowse = mutableStateOf(false)
 var name = mutableStateOf("")
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun cards(navController: NavController, cardViewModel: CardViewModel){
+fun cards(navController: NavController, cardViewModel: CardViewModel) {
     val focusManager = LocalFocusManager.current
 
-    if(cBrowse.value){
-        cardBrowse(cardViewModel)
-    }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
+                    }
+                },
+                title = {
+                    TextField(
+                        value = name.value,
+                        onValueChange = { name.value = it },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Search
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                focusManager.clearFocus()
+                                cardBrowse(cardViewModel)
 
-    Column() {
-        Text(text = "Search cards:")
-
-        TextField(
-            value = name.value,
-            onValueChange = { name.value = it },
-            label = { Text("Card name") }
-        )
-
-        Button(modifier = Modifier.padding(10.dp), onClick = {
-            focusManager.clearFocus()
-            cBrowse.value=true
-        }) {
-            Text("Search")
+                            }),
+                        label = { Text("Search cards") }
+                    )
+                },
+                actions = {
+                    IconButton(onClick = {
+                        focusManager.clearFocus()
+                        cardBrowse(cardViewModel)
+                        }) {
+                        Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")
+                    }
+                }
+            )
         }
-        Button(modifier = Modifier.padding(10.dp), onClick = {
-            navController.popBackStack()
-        }) {
-            Text("Close")
+    ) {
+        if (cardViewModel.cardListResponse.size==0) {
+            Column(modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Text(text = "No results",fontSize= 30.sp)
+                }
+            }
+        } else {
+            CardList(cardList = cardViewModel.cardListResponse)
         }
     }
 }
 
-@Composable
 fun cardBrowse(cardViewModel: CardViewModel){
-    CardList(cardList = cardViewModel.cardListResponse)
     cardViewModel.getCardList(name.value)
 }
 
 @Composable
 fun CardList(cardList: List<MTGCard>){
-    Column(modifier = Modifier.fillMaxSize().background(Color.White).zIndex(1f)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colors.background)
+        .zIndex(1f)) {
         Text("Result: "+cardList.size.toString()+" cards")
-        Button(modifier = Modifier.padding(10.dp), onClick = {
-            cBrowse.value=false
-        }) {
-            Text("Close")
-        }
-        LazyColumn{
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)){
             itemsIndexed(items= cardList){index, item ->
                 CardItem(card = item)
             }
@@ -87,24 +118,21 @@ fun CardItem( card: MTGCard) { //navController: NavHostController,
         .padding(8.dp, 4.dp)
         .fillMaxWidth()
         .wrapContentHeight()//.height(500.dp)
-        .background(Color.White)
-        //, shape = RoundedCornerShape(8.dp), elevation = 4.dp
+        .clip(RoundedCornerShape(2))
+        .background(Color.DarkGray)
     ) {
-        Surface(){
             Column(
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min))
             {
-                if(card.card_faces== null){
+                if(card.image_uris!=null){
                     Image(
                         painter = rememberImagePainter
                             (data = card.image_uris.normal,
                             builder = {
                                 scale(Scale.FILL)
-                                //placeholder(R.drawable.notification_action_background)
-                                //transformations(CircleCropTransformation())
                             }
                         ),
                         contentDescription = card.name,
@@ -114,13 +142,12 @@ fun CardItem( card: MTGCard) { //navController: NavHostController,
                             .height(440.dp)
                     )
                 } else{
+                    if(card.card_faces[0]!=null){
                     Image(
                         painter = rememberImagePainter
                             (data = card.card_faces[0].image_uris.normal,
                             builder = {
                                 scale(Scale.FILL)
-                                //placeholder(R.drawable.notification_action_background)
-                                //transformations(CircleCropTransformation())
                             }
                         ),
                         contentDescription = card.name,
@@ -128,15 +155,14 @@ fun CardItem( card: MTGCard) { //navController: NavHostController,
                             .fillMaxSize()
                             .weight(1f)
                             .height(440.dp)
-                    )
+                    )}
+                    if(card.card_faces[1]!=null){
                     Spacer(modifier = Modifier.height(5.dp))
                     Image(
                         painter = rememberImagePainter
                             (data = card.card_faces[1].image_uris.normal,
                             builder = {
                                 scale(Scale.FILL)
-                                //placeholder(R.drawable.notification_action_background)
-                                //transformations(CircleCropTransformation())
                             }
                         ),
                         contentDescription = card.name,
@@ -144,22 +170,30 @@ fun CardItem( card: MTGCard) { //navController: NavHostController,
                             .fillMaxSize()
                             .weight(1f)
                             .height(440.dp)
-                    )
+                    )}
                 }
                 Column(
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        //.padding(4.dp)
-                        //.fillMaxHeight()
-                        //.weight(1f)
+                    //modifier = Modifier
                 ) {
-                    Text(text = card.name,
-                        modifier = Modifier
-                            .background(Color.White)
-                            //.padding(4.dp)
-                    )
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                        if (card.name != null) {
+                            Text(
+                                text = card.name,
+                                //modifier = Modifier
+                            )
+                        }
+                        if (card.prices.usd != null) {
+                            Text(
+                                text = "$"+card.prices.usd,
+                                //modifier = Modifier
+                            )
+                        } else {Text(
+                            text = "$...",
+                            //modifier = Modifier
+                        )}
+                    }
                 }
-            }
         }
     }
 }
