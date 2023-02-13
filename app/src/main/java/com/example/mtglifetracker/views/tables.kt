@@ -1,5 +1,6 @@
 package com.example.mtglifetracker.views
 
+import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.Interaction
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.example.mtglifetracker.Data
 import kotlinx.coroutines.flow.Flow
@@ -37,6 +39,7 @@ import kotlin.concurrent.thread
 fun players(num: Int = 2, navController: NavHostController){
     showSubmenu.value = 0
     colorpicker.value = 0
+    AndroidView({ View(it).apply { keepScreenOn = true } })
     Box {
         when(num){
             3-> {
